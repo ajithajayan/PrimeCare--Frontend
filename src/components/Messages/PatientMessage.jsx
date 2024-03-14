@@ -66,7 +66,7 @@ const PatientChatComponent = () => {
     if (!appointmentId) return;
 
     const newClient = new W3CWebSocket(
-      `wss://primecarecloud/ws/chat/${appointmentId}/`
+      `wss://primecare.cloud/ws/chat/${appointmentId}/`
     );
     setClient(newClient);
 
