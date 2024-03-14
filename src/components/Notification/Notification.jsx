@@ -45,7 +45,7 @@ function Notification() {
         .then((res) => {
           setDoctId(res.data.doctor_user.custom_id);
           fetchData(res.data.doctor_user.custom_id);
-          const wsURL = `ws://127.0.0.1:8000/ws/doctor-notification/${res.data.doctor_user.custom_id}/`;
+          const wsURL = `wss://primecare.cloud/ws/doctor-notification/${res.data.doctor_user.custom_id}/`;
           const socket = new WebSocket(wsURL);
 
           socket.onopen = () => {

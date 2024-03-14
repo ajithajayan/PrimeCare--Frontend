@@ -63,7 +63,7 @@ const ChatComponent = () => {
   const connectToWebSocket = (appointmentId) => {
     if (!appointmentId) return;
 
-    const newClient = new W3CWebSocket(`ws://127.0.0.1:8000/ws/chat/${appointmentId}/`);
+    const newClient = new W3CWebSocket(`wss://primecare.cloud/ws/chat/${appointmentId}/`);
     setClient(newClient);
     console.log('SET CLIENT:', newClient);
 
