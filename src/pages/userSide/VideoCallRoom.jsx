@@ -19,8 +19,8 @@ function VideoCallRoom() {
 
   const myMeeting = async (element) => {
     // generate Kit Token
-    const appID = 742957611;
-    const serverSecret = "0d579fcb64d555c454d15cfb3d121803";
+    const appID = 1736857094;
+    const serverSecret = "4e83ccfe5f2dc1a2c0ac20b31da6e2bf";
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
       appID,
       serverSecret,
