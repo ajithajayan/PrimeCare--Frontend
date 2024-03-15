@@ -11,20 +11,31 @@ function UserHome() {
   const authentication_user = useSelector((state) => state.authentication_user);
   return (
     <>
-      <form>
-        <header className="header h-1/4">
-          <a aria-label="Home" role="link">
-            <div className="relative">
-              <img
-                className="w-full h-svh"
-                src={DoctorConsultation}
-                alt="Logo"
-              />
-              <div className="absolute inset-0 bg-blue-100 opacity-40"></div>
-            </div>
-          </a>
-        </header>
-      </form>
+      <div class="relative bg-gradient-to-r from-purple-600 to-blue-600 h-screen text-white overflow-hidden">
+        <div class="absolute inset-0">
+          <img
+            src={DoctorConsultation}
+            alt="Background Image"
+            class="object-cover object-center w-full h-full"
+          />
+          <div class="absolute inset-0 bg-black opacity-50"></div>
+        </div>
+
+        <div class="relative z-10 flex flex-col justify-center items-center h-full text-center">
+          <h1 class="text-5xl font-bold leading-tight mb-4">
+            Your Partner In Lifelong Health
+          </h1>
+          <p class="text-lg text-gray-300 mb-8">
+            Together, towards better health, a brighter future
+          </p>
+          <Link
+            to="/doctor-list"
+            class="bg-yellow-400 text-gray-900 hover:bg-yellow-300 py-2 px-6 rounded-full text-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
+          >
+            Get Started
+          </Link>
+        </div>
+      </div>
 
       {/* <AppointmentGuide/> */}
       <Appointment />

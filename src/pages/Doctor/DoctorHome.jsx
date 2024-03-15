@@ -1,39 +1,47 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { Link ,useNavigate} from 'react-router-dom'
-import AppointmentGuide from '../../components/userside/AppointmentGuide'
-import Appointment from '../../components/userside/Appointment'
-import FAQSection from '../../components/userside/Element/FAQSection'
-import DoctorAppointment from '../../components/Doctor/DoctorAppointment'
-
-
-
+import React from "react";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import AppointmentGuide from "../../components/userside/AppointmentGuide";
+import Appointment from "../../components/userside/Appointment";
+import FAQSection from "../../components/userside/Element/FAQSection";
+import DoctorAppointment from "../../components/Doctor/DoctorAppointment";
 
 function DoctorHome() {
-  const navigate = useNavigate()
-  const authentication_user = useSelector(state => state.authentication_user)
+  const navigate = useNavigate();
+  const authentication_user = useSelector((state) => state.authentication_user);
   return (
     <>
-    <form>
-      <header className="header">
-        <a href="#" aria-label="Home" role="link">
+      <div class="relative bg-gradient-to-r from-purple-600 to-blue-600 h-screen text-white overflow-hidden">
+        <div class="absolute inset-0">
           <img
-            loading="lazy"
-            srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/7483103ee3369a58d59e9c393ca9deb84c9a1879a83da515aca99ae0c3bf6cf9?apiKey=e5b36b972ccb4739bd317b67a96e9d90&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/7483103ee3369a58d59e9c393ca9deb84c9a1879a83da515aca99ae0c3bf6cf9?apiKey=e5b36b972ccb4739bd317b67a96e9d90&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/7483103ee3369a58d59e9c393ca9deb84c9a1879a83da515aca99ae0c3bf6cf9?apiKey=e5b36b972ccb4739bd317b67a96e9d90&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/7483103ee3369a58d59e9c393ca9deb84c9a1879a83da515aca99ae0c3bf6cf9?apiKey=e5b36b972ccb4739bd317b67a96e9d90&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/7483103ee3369a58d59e9c393ca9deb84c9a1879a83da515aca99ae0c3bf6cf9?apiKey=e5b36b972ccb4739bd317b67a96e9d90&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/7483103ee3369a58d59e9c393ca9deb84c9a1879a83da515aca99ae0c3bf6cf9?apiKey=e5b36b972ccb4739bd317b67a96e9d90&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/7483103ee3369a58d59e9c393ca9deb84c9a1879a83da515aca99ae0c3bf6cf9?apiKey=e5b36b972ccb4739bd317b67a96e9d90&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/7483103ee3369a58d59e9c393ca9deb84c9a1879a83da515aca99ae0c3bf6cf9?apiKey=e5b36b972ccb4739bd317b67a96e9d90&"className="aspect-[2.33] object-contain object-center w-full"
-            alt="Logo"
+            src={DocBanner}
+            alt="Background Image"
+            class="object-cover object-center w-full h-full"
           />
-        </a>
-      </header>
+          <div class="absolute inset-0 bg-black opacity-50"></div>
+        </div>
 
-      
-    </form>
+        <div class="relative z-10 flex flex-col justify-center items-center h-full text-center">
+          <h1 class="text-5xl font-bold leading-tight mb-4">
+            Welcome to PrimeCare
+          </h1>
+          <p class="text-lg text-gray-300 mb-8">
+            Innovating healthcare through digital solutions
+          </p>
+          <Link
+            to="/doctor-list"
+            class="bg-yellow-400 text-gray-900 hover:bg-yellow-300 py-2 px-6 rounded-full text-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
+          >
+            Get Started
+          </Link>
+        </div>
+      </div>
 
-    {/* <AppointmentGuide/> */}
-    <DoctorAppointment/>  
-    <FAQSection/>
-
+      {/* <AppointmentGuide/> */}
+      <DoctorAppointment />
+      <FAQSection />
     </>
-  )
+  );
 }
 
-export default DoctorHome
+export default DoctorHome;
