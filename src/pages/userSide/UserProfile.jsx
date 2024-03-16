@@ -7,9 +7,15 @@ import userImage from "../../assets/images/user.png";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import BookindDetails from "../../components/userside/Element/BookindDetails";
-import { UserAPIwithAcess } from "../../components/API/AdminAPI";
+import { UserAPIwithAcess, UserImageAccess } from "../../components/API/AdminAPI";
 
 function UserProfile() {
+  const accessToken = Cookies.get("access");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
   const UserFields = [
     "username",
     "first_name",
@@ -69,8 +75,8 @@ function UserProfile() {
   const [booking, setBooking] = useState(null);
 
   const fetchBookingDetails = (id) => {
-    axios
-      .get(baseUrl + `appointment/booking/details/patient/${id}`)
+    UserAPIwithAcess
+      .get(`appointment/booking/details/patient/${id}`,config)
       .then((res) => {
         setBooking(res.data.data);
         console.log("the details of the doctor is here", res.data);
@@ -94,8 +100,8 @@ function UserProfile() {
     let form_data = new FormData();
     form_data.append("profile_picture", file, file.name);
 
-    await axios
-      .patch(baseUrl + `auth/doc/update/${id}`, form_data)
+    await UserImageAccess
+      .patch(`auth/doc/update/${id}`, form_data,config)
       .then((res) => {
         fetchData();
         toast.success("profile pic has been updated");
@@ -110,8 +116,8 @@ function UserProfile() {
     let form_data = new FormData();
     form_data.append("profile_picture", ""); // Set to an empty string or any placeholder value
     // Add other fields to form_data as needed
-    await axios
-      .patch(baseUrl + `auth/doc/update/${id}`, form_data)
+    await UserImageAccess
+      .patch(baseUrl + `auth/doc/update/${id}`, form_data,config)
       .then((res) => {
         fetchData();
         toast.success("profile pic deleted successfully");
@@ -124,7 +130,7 @@ function UserProfile() {
   // ........................... fetch Wallet data........................................................
 
   const fetctWallet = (custom_id) => {
-    axios.get(baseUrl + `auth/wallet/amount/${custom_id}`).then((res) => {
+    UserAPIwithAcess.get( `auth/wallet/amount/${custom_id}`,config).then((res) => {
       setWallet(res.data.balance);
       console.log(res.data.balance);
     });
@@ -142,7 +148,7 @@ function UserProfile() {
       console.log(id);
       setId(id);
 
-      const doct = await axios.get(baseUrl + "auth/patient/list/" + id);
+      const doct = await UserAPIwithAcess.get( "auth/patient/list/" + id,config);
       if (doct.status === 200) {
         setProfile(doct.data.profile_picture);
         setAbout(doct.data);
@@ -150,9 +156,9 @@ function UserProfile() {
         fetctWallet(doct.data.patient_user.custom_id);
         fetchBookingDetails(doct.data.patient_user.custom_id);
 
-        axios
+        UserAPIwithAcess
           .get(
-            baseUrl + `auth/admin/client/${doct.data.patient_user.custom_id}`
+             `auth/admin/client/${doct.data.patient_user.custom_id}`,config
           )
           .then((res) => {
             setUser({ ...res.data.user }); // Spread the user object to avoid mutation
@@ -179,68 +185,7 @@ function UserProfile() {
     fetchData();
   }, [wallet]);
 
-  // used to update the details of the users
-  // const handleInputChange = (field, value) => {
-  //   setUser((prevUser) => ({
-  //     ...prevUser,
-  //     [field]: value,
-  //   }));
-  // };
-
-  // const handleCheckboxChange = (field, checked) => {
-  //   setUser((prevUser) => ({
-  //     ...prevUser,
-  //     [field]: checked,
-  //   }));
-  // };
-
-  // const handleSelectChange = (e, field) => {
-  //   const value = e.target.value;
-
-  //   if (field === "specializations") {
-  //     setSpecializations(value);
-  //   } else if (field.includes(".")) {
-  //     const [nestedField, subField] = field.split(".");
-  //     setUser((prevUser) => ({
-  //       ...prevUser,
-  //       [nestedField]: {
-  //         ...prevUser[nestedField],
-  //         [subField]: value,
-  //       },
-  //     }));
-  //   } else {
-  //     handleInputChange(field, value);
-  //   }
-  // };
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-
-  //   // Create a FormData object
-  //   const formData = new FormData();
-
-  //   // Append user data to the form data
-  //   Object.keys(user).forEach((key) => {
-  //     formData.append(`user.${key}`, user[key]);
-  //   });
-
-  //   // Append other data to the form data
-  //   formData.append("specializations", specializations);
-
-  //   // Make the API request
-  //   axios
-  //     .patch(baseUrl + `auth/admin/client/${docid}`, formData)
-  //     .then((res) => {
-  //       console.log("Data updated successfully:", res.data);
-  //       toast.success("Data updated successfully");
-  //       // Optionally, you can reset the form or handle other actions
-  //     })
-  //     .catch((err) => {
-  //       console.error("Error updating data:", err);
-  //       // Handle the error as needed
-  //       toast.error(err.response.data.user.date_of_birth[0]);
-  //     });
-  // };
+ 
   const handleInputChange = (field, value) => {
     setUser((prevUser) => ({
       ...prevUser,
@@ -345,8 +290,8 @@ function UserProfile() {
       formData.append("specializations", specializations);
 
       // Make the API request
-      axios
-        .patch(baseUrl + `auth/admin/client/${docid}`, formData)
+      UserImageAccess
+        .patch(`auth/admin/client/${docid}`, formData,config)
         .then((res) => {
           console.log("Data updated successfully:", res.data);
           toast.success("Data updated successfully");

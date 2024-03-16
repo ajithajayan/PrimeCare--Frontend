@@ -19,6 +19,12 @@ import { UserAPIwithAcess } from "../../components/API/AdminAPI";
 
 
 function DocProfile() {
+  const accessToken = Cookies.get("access");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
   
   const { id } = useParams();
   
@@ -40,8 +46,8 @@ function DocProfile() {
 
 
   const fetchDoctor = async() => {
-    await axios
-      .get(baseUrl + `appointment/detail/doctors/${id}`)
+    await UserAPIwithAcess
+      .get(`appointment/detail/doctors/${id}`,config)
       .then((res) => {
         setdoct(res.data);
         console.log(res.data);

@@ -4,8 +4,16 @@ import axios from "axios";
 import { baseUrl } from "../../utils/constants/Constants";
 import Cookies from "js-cookie";
 import docpic from "../../assets/images/doctor/docpic.jpg";
+import { UserAPIwithAcess } from "../API/AdminAPI";
 
 const DoctorContainer = ({ selectedFilters }) => {
+  const accessToken = Cookies.get("access");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
+
   const [searchQuery, setSearchQuery] = useState("");
   const [genderFilter, setGenderFilter] = useState("");
   const [specializationFilter, setSpecializationFilter] = useState("");
@@ -55,7 +63,7 @@ const DoctorContainer = ({ selectedFilters }) => {
     };
 
     // Make the axios call with headers
-    axios
+    UserAPIwithAcess
       .get(apiUrl, {
         headers: headers,
       })

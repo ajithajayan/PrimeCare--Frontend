@@ -69,6 +69,12 @@ const accountIcon = (
 );
 
 const Navbar = () => {
+  const accessToken = Cookies.get("access");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { name, isAuthenticated } = useSelector(

@@ -10,9 +10,16 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { UserAPIwithAcess } from "../API/AdminAPI";
+import Cookies from "js-cookie";
 
 
 const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
+  const accessToken = Cookies.get("access");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
   const [Razorpay] = useRazorpay();
   // const userId = useSelector((state) => state.authentication_user.user_id);
   const [patientID, setPatientID] = useState(null)
@@ -26,7 +33,7 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
 
   useEffect(() => {
     fetchAvailableTimeSlots(selectedDate.format("YYYY-MM-DD"));
-    axios.get(`${baseUrl}auth/custom-id/patient/${patient_id}`).then((res)=>{
+    UserAPIwithAcess.get(`auth/custom-id/patient/${patient_id}`,config).then((res)=>{
       setPatientID(res.data.patient_user.custom_id)
       console.log("the patient cusotom id got here ",res.data)
 
@@ -41,9 +48,9 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
     try {
       setLoading(true);
 
-      const response = await axios.get(
-        `${baseUrl}appointment/patient/check/doctor/${doctorId}/slots?date=${date}`
-      );
+      const response = await UserAPIwithAcess.get(
+        `appointment/patient/check/doctor/${doctorId}/slots?date=${date}`
+      ,config);
 
       setAvailableTimeSlots(response.data.available_slots || []);
     } catch (error) {
@@ -84,8 +91,8 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
   // complete order
   const complete_order = (paymentID, orderID, signature) => {
     console.log("patient id got here befor  passing",patientID)
-    axios
-      .post(`${baseUrl}appointment/complete-order/`, {
+    UserAPIwithAcess
+      .post(`appointment/complete-order/`, {
         payment_id: paymentID,
         order_id: orderID,
         signature: signature,
@@ -95,7 +102,7 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
         booked_date: selectedDate.format("YYYY-MM-DD"),
         booked_from_time: selectedTimeSlot.from,
         booked_to_time: selectedTimeSlot.to,
-      })
+      },config)
       .then((response) => {
         console.log(response.data);
         if (response.status === 201) {
@@ -109,13 +116,13 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
 
   const handlePayment = () => {
     // Check slot availability before proceeding with payment
-    axios
-      .post(`${baseUrl}appointment/check-availability/`, {
+    UserAPIwithAcess
+      .post(`appointment/check-availability/`, {
         doctor_id: doctorId,
         selected_from_time: selectedTimeSlot.from,
         selected_to_time: selectedTimeSlot.to,
         selected_day: selectedDate.format("YYYY-MM-DD"),
-      })
+      },config)
       .then((availabilityCheckResponse) => {
         if (!availabilityCheckResponse.data.available) {
           toast.warning("This slot is already booked. Please choose another slot.");
@@ -123,11 +130,11 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
         }
 
         // If the slot is available, proceed with creating the order
-        return axios.post(`${baseUrl}appointment/create-order/`, {
+        return UserAPIwithAcess.post(`${baseUrl}appointment/create-order/`, {
           amount: fees,
           currency: "INR",
           // Add any other relevant data for creating the order
-        });
+        },config);
       })
       .then((orderResponse) => {
         const order = orderResponse.data.data.id;
@@ -186,21 +193,21 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
 
   const handleWalletPayment = () => {
     // Check slot availability before proceeding with payment
-    axios
-      .post(`${baseUrl}appointment/check-availability/`, {
+    UserAPIwithAcess
+      .post(`appointment/check-availability/`, {
         doctor_id: doctorId,
         selected_from_time: selectedTimeSlot.from,
         selected_to_time: selectedTimeSlot.to,
         selected_day: selectedDate.format("YYYY-MM-DD"),
-      })
+      },config)
       .then((availabilityCheckResponse) => {
         if (!availabilityCheckResponse.data.available) {
           toast.warning("This slot is already booked. Please choose another slot.");
           return;
         }
   
-        axios
-          .post(`${baseUrl}appointment/wallet/payment/`, {
+        UserAPIwithAcess
+          .post(`appointment/wallet/payment/`, {
             payment_id: `wall-pay-${selectedDate.format("YYYY-MM-DD")}-${selectedTimeSlot.from}`,
             amount: fees,
             doctor_id: doctorId,
@@ -208,7 +215,7 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
             booked_date: selectedDate.format("YYYY-MM-DD"),
             booked_from_time: selectedTimeSlot.from,
             booked_to_time: selectedTimeSlot.to,
-          })
+          },config)
           .then((response) => {
             console.log(response.data);
             if (response.status === 201) {
