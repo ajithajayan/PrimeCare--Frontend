@@ -90,7 +90,7 @@ function DocProfile() {
       icon: <ClockIcon className="h-6 w-6 text-blue-500" />,
     },
     {
-      title: "Booking Fees",
+      title: "Consultaion Fees",
       key: "bookingFees",
       icon: <CurrencyDollarIcon className="h-6 w-6 text-blue-500" />,
     },
