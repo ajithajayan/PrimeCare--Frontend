@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import DeleteDoct from "../../components/admin/elements/Modal/DeleteDoct";
 import EditPatient from "../../components/admin/elements/Modal/EditPatient";
 import Cookies from 'js-cookie';
+import { AdminAPIwithAcess } from "../../components/API/AdminAPI";
 
 function Patient() {
   const onChange = (e) => console.log(`radio checked:${e.target.value}`);
@@ -29,7 +30,7 @@ function Patient() {
     const formData = new FormData();
     formData.append("user.is_active", !currentStatus);
 
-    axios
+    AdminAPIwithAcess
       .patch(baseUrl + `auth/admin/client/${docId}`, formData)
       .then((res) => {
         console.log("Data updated successfully:", res.data);
@@ -56,13 +57,8 @@ function Patient() {
   // to fetch the data as per the search query
   const fetchUsers = (url) => {
     const accessToken = Cookies.get("access");
-    axios
-      .get(url, {
-                headers: {
-                  Authorization: `Bearer ${accessToken}`,
-                  Accept: 'application/json',
-                  'Content-Type': 'application/json',
-                }})
+    AdminAPIwithAcess
+      .get(url)
       .then((req) => {
         setDoctorData(req.data.results);
         setNextPage(req.data.next);

@@ -7,6 +7,7 @@ import userImage from "../../assets/images/user.png";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import BookindDetails from "../../components/userside/Element/BookindDetails";
+import { UserAPIwithAcess } from "../../components/API/AdminAPI";
 
 function UserProfile() {
   const UserFields = [
@@ -68,7 +69,7 @@ function UserProfile() {
   const [booking, setBooking] = useState(null);
 
   const fetchBookingDetails = (id) => {
-    axios
+    UserAPIwithAcess
       .get(baseUrl + `appointment/booking/details/patient/${id}`)
       .then((res) => {
         setBooking(res.data.data);
@@ -93,7 +94,7 @@ function UserProfile() {
     let form_data = new FormData();
     form_data.append("profile_picture", file, file.name);
 
-    await axios
+    await UserAPIwithAcess
       .patch(baseUrl + `auth/doc/update/${id}`, form_data)
       .then((res) => {
         fetchData();
@@ -109,7 +110,7 @@ function UserProfile() {
     let form_data = new FormData();
     form_data.append("profile_picture", ""); // Set to an empty string or any placeholder value
     // Add other fields to form_data as needed
-    await axios
+    await UserAPIwithAcess
       .patch(baseUrl + `auth/doc/update/${id}`, form_data)
       .then((res) => {
         fetchData();
@@ -123,7 +124,7 @@ function UserProfile() {
   // ........................... fetch Wallet data........................................................
 
   const fetctWallet = (custom_id) => {
-    axios.get(baseUrl + `auth/wallet/amount/${custom_id}`).then((res) => {
+    UserAPIwithAcess.get(baseUrl + `auth/wallet/amount/${custom_id}`).then((res) => {
       setWallet(res.data.balance);
       console.log(res.data.balance);
     });
@@ -141,7 +142,7 @@ function UserProfile() {
       console.log(id);
       setId(id);
 
-      const doct = await axios.get(baseUrl + "auth/patient/list/" + id);
+      const doct = await UserAPIwithAcess.get(baseUrl + "auth/patient/list/" + id);
       if (doct.status === 200) {
         setProfile(doct.data.profile_picture);
         setAbout(doct.data);
@@ -149,7 +150,7 @@ function UserProfile() {
         fetctWallet(doct.data.patient_user.custom_id);
         fetchBookingDetails(doct.data.patient_user.custom_id);
 
-        axios
+        UserAPIwithAcess
           .get(
             baseUrl + `auth/admin/client/${doct.data.patient_user.custom_id}`
           )
@@ -344,7 +345,7 @@ function UserProfile() {
       formData.append("specializations", specializations);
 
       // Make the API request
-      axios
+      UserAPIwithAcess
         .patch(baseUrl + `auth/admin/client/${docid}`, formData)
         .then((res) => {
           console.log("Data updated successfully:", res.data);

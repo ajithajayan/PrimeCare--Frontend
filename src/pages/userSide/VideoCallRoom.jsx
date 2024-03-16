@@ -11,11 +11,7 @@ function VideoCallRoom() {
   const userID = decoded.user_id;
   const userName = decoded.first_name;
 
-  console.log(
-    "this is the  authentication_user from redux store 👉👉👉👉👉👉👉👉👉👉👉👉👉👉",
-    userID,
-    userName
-  );
+  
 
   const myMeeting = async (element) => {
     // generate Kit Token

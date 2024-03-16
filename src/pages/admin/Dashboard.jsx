@@ -7,6 +7,7 @@ import AppWidgetSummary from '../../components/admin/elements/app-widget-summary
 import { useEffect, useState } from 'react';
 import { baseUrl } from '../../utils/constants/Constants';
 import axios from 'axios';
+import { AdminDashBoardAPI } from '../../components/API/AdminAPI';
 
 // import Iconify from '../elements/iconify/iconify';
 
@@ -16,8 +17,8 @@ export default function Dashboard() {
 
   const [adminData, setadminData] = useState(null)
 
-  useEffect(() => {
-    axios.get(baseUrl+"appointment/api/admin-transactions/").then((res) => {
+  useEffect ( () => {
+    AdminDashBoardAPI.get().then((res) => {
       setadminData(res.data)
       console.log(res.data);
     }).catch((error)=>{

@@ -9,6 +9,7 @@ import useRazorpay from "react-razorpay";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { UserAPIwithAcess } from "../API/AdminAPI";
 
 
 const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
@@ -25,7 +26,7 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
 
   useEffect(() => {
     fetchAvailableTimeSlots(selectedDate.format("YYYY-MM-DD"));
-    axios.get(`${baseUrl}auth/custom-id/patient/${patient_id}`).then((res)=>{
+    UserAPIwithAcess.get(`${baseUrl}auth/custom-id/patient/${patient_id}`).then((res)=>{
       setPatientID(res.data.patient_user.custom_id)
       console.log("the patient cusotom id got here ",res.data)
 
@@ -40,7 +41,7 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
     try {
       setLoading(true);
 
-      const response = await axios.get(
+      const response = await UserAPIwithAcess.get(
         `${baseUrl}appointment/patient/check/doctor/${doctorId}/slots?date=${date}`
       );
 
@@ -83,7 +84,7 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
   // complete order
   const complete_order = (paymentID, orderID, signature) => {
     console.log("patient id got here befor  passing",patientID)
-    axios
+    UserAPIwithAcess
       .post(`${baseUrl}appointment/complete-order/`, {
         payment_id: paymentID,
         order_id: orderID,
@@ -108,7 +109,7 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
 
   const handlePayment = () => {
     // Check slot availability before proceeding with payment
-    axios
+    UserAPIwithAcess
       .post(`${baseUrl}appointment/check-availability/`, {
         doctor_id: doctorId,
         selected_from_time: selectedTimeSlot.from,
@@ -185,7 +186,7 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
 
   const handleWalletPayment = () => {
     // Check slot availability before proceeding with payment
-    axios
+    UserAPIwithAcess
       .post(`${baseUrl}appointment/check-availability/`, {
         doctor_id: doctorId,
         selected_from_time: selectedTimeSlot.from,

@@ -10,6 +10,7 @@ import DocCrump from "../../components/admin/elements/BreadCrumps/DocCrump";
 import { toast } from "react-toastify";
 import DeleteDoct from "../../components/admin/elements/Modal/DeleteDoct";
 import Cookies from "js-cookie";
+import { AdminAPIwithAcess } from "../../components/API/AdminAPI";
 
 function Doctor() {
   const onChange = (e) => console.log(`radio checked:${e.target.value}`);
@@ -28,7 +29,7 @@ function Doctor() {
     const formData = new FormData();
     formData.append("user.is_active", !currentStatus);
 
-    axios
+    AdminAPIwithAcess
       .patch(baseUrl + `auth/admin/doc/${docId}`, formData)
       .then((res) => {
         console.log("Data updated successfully:", res.data);
@@ -56,14 +57,8 @@ function Doctor() {
   const fetchUsers = (url) => {
     const accessToken = Cookies.get("access");
     console.log(accessToken, "this portion for the access token");
-    axios
-      .get(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      })
+    AdminAPIwithAcess
+      .get(url)
       .then((req) => {
         setDoctorData(req.data.results);
         setNextPage(req.data.next);

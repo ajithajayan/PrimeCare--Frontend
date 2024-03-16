@@ -30,7 +30,7 @@ function DoctorHome() {
             Innovating healthcare through digital solutions
           </p>
           <Link
-            to="/doctor-list"
+            to="/doctor/profile"
             class="bg-yellow-400 text-gray-900 hover:bg-yellow-300 py-2 px-6 rounded-full text-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
           >
             Get Started

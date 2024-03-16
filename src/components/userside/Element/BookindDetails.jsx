@@ -14,7 +14,7 @@ function BookindDetails({ transaction_id, setWallet }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
+    UserAPIwithAcess
       .get(baseUrl + `appointment/detail/transaction/${transaction_id}`)
       .then((res) => {
         const transactionData = res.data;
@@ -25,7 +25,7 @@ function BookindDetails({ transaction_id, setWallet }) {
         // const updatedBalance = wallet.balance + transactionData.amount - 50;
         // setWallet({ ...wallet, balance: updatedBalance });
 
-        axios
+        UserAPIwithAcess
           .get(
             baseUrl + `appointment/detail/doctors/${transactionData.doctor_id}`
           )
@@ -43,7 +43,7 @@ function BookindDetails({ transaction_id, setWallet }) {
   }, [status]);
 
   const handleCancel = () => {
-    axios
+    UserAPIwithAcess
       .post(
         baseUrl + `appointment/cancel/booking/`,
         {

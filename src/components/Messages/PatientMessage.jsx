@@ -9,6 +9,7 @@ import { jwtDecode } from "jwt-decode";
 import docavatar from "../../assets/images/doctor/docavatar.webp";
 import user from "../../assets/images/doctor/user.png";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { UserAPIwithAcess } from "../API/AdminAPI";
 
 const PatientChatComponent = () => {
   const [message, setMessage] = useState("");
@@ -28,7 +29,7 @@ const PatientChatComponent = () => {
 
   const fetchBookings = async (id) => {
     try {
-      const response = await axios.get(
+      const response = await UserAPIwithAcess.get(
         `${baseUrl}appointment/api/patient-transactions/?patient_id=${id}`
       );
       setBookings(response.data);
@@ -39,7 +40,7 @@ const PatientChatComponent = () => {
   };
 
   const fetchDoctorID = (id) => {
-    axios
+    UserAPIwithAcess
       .get(baseUrl + `auth/custom-id/patient/${id}`)
       .then((res) => {
         setdoct(res.data);

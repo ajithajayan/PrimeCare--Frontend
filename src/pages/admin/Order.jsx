@@ -10,6 +10,7 @@ import DocCrump from "../../components/admin/elements/BreadCrumps/DocCrump";
 import { toast } from "react-toastify";
 import DeleteDoct from "../../components/admin/elements/Modal/DeleteDoct";
 import Cookies from "js-cookie";
+import { AdminAPIwithAcess } from "../../components/API/AdminAPI";
 
 function Order() {
   const [nextPage, setNextPage] = useState(null);
@@ -47,14 +48,8 @@ function Order() {
   const fetchTransactions = (url) => {
     const accessToken = Cookies.get("access");
     console.log(accessToken, "this portion for the access token");
-    axios
-      .get(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      })
+    AdminAPIwithAcess
+      .get(url)
       .then((req) => {
         setTrasaction(req.data.results);
         setNextPage(req.data.next);

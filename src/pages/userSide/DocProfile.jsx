@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 import Rating from "../../components/Rating/Rating";
+import { UserAPIwithAcess } from "../../components/API/AdminAPI";
 
 function DocProfile() {
   const { id } = useParams();
@@ -36,7 +37,7 @@ function DocProfile() {
 
 
   const fetchDoctor = () => {
-    axios
+    UserAPIwithAcess
       .get(baseUrl + `appointment/detail/doctors/${id}`)
       .then((res) => {
         setdoct(res.data);
