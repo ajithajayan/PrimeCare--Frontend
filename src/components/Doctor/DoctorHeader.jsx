@@ -120,7 +120,7 @@ const DocotrHeader = () => {
         fetchData(res.data.doctor_user.custom_id);
         setCustomID(res.data.doctor_user.custom_id);
 
-        const wsURL = `wss://primecare.cloud/ws/doctor-notification/${res.data.doctor_user.custom_id}/`;
+        const wsURL = `ws://127.0.0.1:8000/ws/doctor-notification/${res.data.doctor_user.custom_id}/`;
         const socket = new WebSocket(wsURL);
         console.log(wsURL);
 
@@ -219,7 +219,7 @@ const DocotrHeader = () => {
             <>
               {/* Logout */}
               <Link
-                className="nav-links"
+                className="nav-links pt-2"
                 onClick={() =>
                   setIsNotificationModalOpen(!isNotificationModalOpen)
                 }
@@ -249,7 +249,7 @@ const DocotrHeader = () => {
         </div>
 
         {/* Hamburger Icon for Small Screens */}
-        <div className="lg:hidden mt-4">
+        <div className="lg:hidden mt-1">
           <button
             className="text-gray-600 hover:text-blue-500 focus:outline-none focus:text-blue-500 transition-colors duration-300"
             onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}

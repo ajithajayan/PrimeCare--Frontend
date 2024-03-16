@@ -5,6 +5,7 @@ import AppointmentGuide from "../../components/userside/AppointmentGuide";
 import Appointment from "../../components/userside/Appointment";
 import FAQSection from "../../components/userside/Element/FAQSection";
 import DoctorAppointment from "../../components/Doctor/DoctorAppointment";
+import DocBanner from "../../assets/images/doctor/docbanner.jpg";
 
 function DoctorHome() {
   const navigate = useNavigate();
