@@ -8,6 +8,7 @@ import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import docavatar from "../../assets/images/doctor/docavatar.webp";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { UserAPIwithAcess } from "../API/AdminAPI";
 const DoctorChatComponent = () => {
   const chatContainerRef = useRef();
   const [message, setMessage] = useState("");

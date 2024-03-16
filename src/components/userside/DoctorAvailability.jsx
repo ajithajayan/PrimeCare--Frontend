@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { axios } from '../API/AdminAPI';
 
 const DoctorAvailability = () => {
   const [selectedDate, setSelectedDate] = useState('2024-02-14'); // Example date

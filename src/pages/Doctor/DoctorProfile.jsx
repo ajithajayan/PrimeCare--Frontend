@@ -107,8 +107,8 @@ function DoctorProfile() {
 
   const [booking, setBooking] = useState(null);
 
-  const fetchBookingDetails = (id) => {
-    UserAPIwithAcess
+  const fetchBookingDetails = async(id) => {
+    await axios
       .get(baseUrl + `appointment/booking/details/doctor/${id}`)
       .then((res) => {
         setBooking(res.data.data);
@@ -133,7 +133,7 @@ function DoctorProfile() {
     let form_data = new FormData();
     form_data.append("profile_picture", file, file.name);
 
-    await UserAPIwithAcess
+    await axios
       .patch(baseUrl + `auth/doc/update/${id}`, form_data)
       .then((res) => {
         fetchData();
@@ -149,7 +149,7 @@ function DoctorProfile() {
     let form_data = new FormData();
     form_data.append("profile_picture", ""); // Set to an empty string or any placeholder value
     // Add other fields to form_data as needed
-    await UserAPIwithAcess
+    await axios
       .patch(baseUrl + `auth/doc/update/${id}`, form_data)
       .then((res) => {
         fetchData();
@@ -172,13 +172,13 @@ function DoctorProfile() {
       console.log(id);
       setId(id);
 
-      const doct = await UserAPIwithAcess.get(baseUrl + "auth/doc/list/" + id);
+      const doct = await axios.get(baseUrl + "auth/doc/list/" + id);
       if (doct.status === 200) {
         setProfile(doct.data.profile_picture);
         setAbout(doct.data);
         setdocid(doct.data.doctor_user.custom_id);
         fetchBookingDetails(doct.data.doctor_user.custom_id)
-        axios
+        await axios
           .get(baseUrl + `auth/admin/doc/${doct.data.doctor_user.custom_id}`)
           .then((res) => {
             setUser({ ...res.data.user }); // Spread the user object to avoid mutation

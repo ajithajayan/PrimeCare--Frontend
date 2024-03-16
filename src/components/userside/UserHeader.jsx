@@ -220,20 +220,33 @@ const Navbar = () => {
             <div className="flex flex-col space-y-5">
               <NavLink
                 to=""
-                className="text-gray-600 hover:text-blue-500 cursor-pointer transition-colors duration-300"
+                className="flex text-gray-800 hover:text-blue-500 cursor-pointer transition-colors duration-300"
               >
                 Home
               </NavLink>
 
-              <NavLink className="text-gray-600 hover:text-blue-500 cursor-pointer transition-colors duration-300">
-                Destinations
+              <NavLink
+                to="/doctor-list"
+                className="flex text-gray-800 hover:text-blue-500 cursor-pointer transition-colors duration-300"
+              >
+                Find Doctor
               </NavLink>
 
-              <NavLink className="text-gray-600 hover:text-blue-500 cursor-pointer transition-colors duration-300">
-                Packages
+              <NavLink
+                to="/profile"
+                className="flex text-gray-800 hover:text-blue-500 cursor-pointer transition-colors duration-300"
+              >
+                My Profile
               </NavLink>
 
-              <NavLink className="text-gray-600 hover:text-blue-500 cursor-pointer transition-colors duration-300">
+              <NavLink
+                to="/user-chat"
+                className="flex text-gray-800 hover:text-blue-500 cursor-pointer transition-colors duration-300"
+              >
+                Messages
+              </NavLink>
+
+              <NavLink className="flex text-gray-800 hover:text-blue-500 cursor-pointer transition-colors duration-300">
                 About Us
               </NavLink>
 

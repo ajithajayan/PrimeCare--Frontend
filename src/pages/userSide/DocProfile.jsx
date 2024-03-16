@@ -36,8 +36,8 @@ function DocProfile() {
   const [showBooking, setShowBooking] = useState(false);
 
 
-  const fetchDoctor = () => {
-    UserAPIwithAcess
+  const fetchDoctor = async() => {
+    await axios
       .get(baseUrl + `appointment/detail/doctors/${id}`)
       .then((res) => {
         setdoct(res.data);
@@ -57,7 +57,7 @@ function DocProfile() {
   const doctorDetails = {
     specialization: doct.specializations ? doct.specializations : "General",
     education: doct.education ? doct.education : "",
-    experience: doct.years_of_experience ? doct.years_of_experience : "1 year",
+    experience: doct.years_of_experience ? `${doct.years_of_experience } years`: "1 year",
     timing: doct.consultation_time
       ? doct.consultation_time
       : "10:00 AM - 6:00 PM",
@@ -76,7 +76,7 @@ function DocProfile() {
       icon: <BeakerIcon className="h-6 w-6 text-blue-500" />,
     },
     {
-      title: "Education",
+      title: "Qualification",
       key: "education",
       icon: <AcademicCapIcon className="h-6 w-6 text-blue-500" />,
     },
@@ -135,7 +135,7 @@ function DocProfile() {
                 </div>
               </div>
               <hr className="my-6 border-t border-gray-300" />
-             {showBooking&& <div className="flex flex-col">
+             {showBooking&& <div className="flex flex-col overflow-x-scroll">
                 <DoctorAvailability fees={doct.consultaion_fees} doctorId={doct.custom_id} patient_id={patient_id}/>
               </div>}
             </div>
@@ -149,7 +149,7 @@ function DocProfile() {
                 ) : (
                   <>
                     Dr. {doct?.user?.first_name} {doct?.user?.last_name} earned
-                    his degree in {doct?.education} from {doct?.college_name}.
+                    his degree in {doct?.education}.
                     Currently, he is a {doct?.specializations || "General"} at{" "}
                     {doct?.Hospital || ""}.
                   </>

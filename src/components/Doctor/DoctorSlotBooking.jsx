@@ -12,6 +12,7 @@ import moment from "moment";
 import DoctorWeeklySlotBooking from "./DoctorWeeklySlotBooking";
 import AdvancedSlotBooking from "./AdvancedSlotBooking";
 import DoctorLeave from "./DoctorLeave";
+import { UserAPIwithAcess } from "../API/AdminAPI";
 
 const DoctorSlotBooking = ({ docid }) => {
   const [selectedDate, setSelectedDate] = useState(dayjs());

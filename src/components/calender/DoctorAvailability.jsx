@@ -26,7 +26,7 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
 
   useEffect(() => {
     fetchAvailableTimeSlots(selectedDate.format("YYYY-MM-DD"));
-    UserAPIwithAcess.get(`${baseUrl}auth/custom-id/patient/${patient_id}`).then((res)=>{
+    axios.get(`${baseUrl}auth/custom-id/patient/${patient_id}`).then((res)=>{
       setPatientID(res.data.patient_user.custom_id)
       console.log("the patient cusotom id got here ",res.data)
 
@@ -41,7 +41,7 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
     try {
       setLoading(true);
 
-      const response = await UserAPIwithAcess.get(
+      const response = await axios.get(
         `${baseUrl}appointment/patient/check/doctor/${doctorId}/slots?date=${date}`
       );
 
@@ -84,7 +84,7 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
   // complete order
   const complete_order = (paymentID, orderID, signature) => {
     console.log("patient id got here befor  passing",patientID)
-    UserAPIwithAcess
+    axios
       .post(`${baseUrl}appointment/complete-order/`, {
         payment_id: paymentID,
         order_id: orderID,
@@ -109,7 +109,7 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
 
   const handlePayment = () => {
     // Check slot availability before proceeding with payment
-    UserAPIwithAcess
+    axios
       .post(`${baseUrl}appointment/check-availability/`, {
         doctor_id: doctorId,
         selected_from_time: selectedTimeSlot.from,
@@ -186,7 +186,7 @@ const DoctorAvailability = ({ doctorId, fees,patient_id }) => {
 
   const handleWalletPayment = () => {
     // Check slot availability before proceeding with payment
-    UserAPIwithAcess
+    axios
       .post(`${baseUrl}appointment/check-availability/`, {
         doctor_id: doctorId,
         selected_from_time: selectedTimeSlot.from,

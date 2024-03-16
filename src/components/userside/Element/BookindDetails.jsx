@@ -5,6 +5,7 @@ import { baseUrl } from "../../../utils/constants/Constants";
 import docavatar from "../../../assets/images/doctor/docavatar.webp";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { UserAPIwithAcess } from "../../API/AdminAPI";
 
 function BookindDetails({ transaction_id, setWallet }) {
   const [doct, setdoct] = useState("");
@@ -14,7 +15,7 @@ function BookindDetails({ transaction_id, setWallet }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    UserAPIwithAcess
+    axios
       .get(baseUrl + `appointment/detail/transaction/${transaction_id}`)
       .then((res) => {
         const transactionData = res.data;
@@ -25,7 +26,7 @@ function BookindDetails({ transaction_id, setWallet }) {
         // const updatedBalance = wallet.balance + transactionData.amount - 50;
         // setWallet({ ...wallet, balance: updatedBalance });
 
-        UserAPIwithAcess
+        axios
           .get(
             baseUrl + `appointment/detail/doctors/${transactionData.doctor_id}`
           )
@@ -43,7 +44,7 @@ function BookindDetails({ transaction_id, setWallet }) {
   }, [status]);
 
   const handleCancel = () => {
-    UserAPIwithAcess
+    axios
       .post(
         baseUrl + `appointment/cancel/booking/`,
         {

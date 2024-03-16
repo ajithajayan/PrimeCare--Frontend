@@ -29,7 +29,7 @@ const PatientChatComponent = () => {
 
   const fetchBookings = async (id) => {
     try {
-      const response = await UserAPIwithAcess.get(
+      const response = await axios.get(
         `${baseUrl}appointment/api/patient-transactions/?patient_id=${id}`
       );
       setBookings(response.data);
@@ -40,7 +40,7 @@ const PatientChatComponent = () => {
   };
 
   const fetchDoctorID = (id) => {
-    UserAPIwithAcess
+    axios
       .get(baseUrl + `auth/custom-id/patient/${id}`)
       .then((res) => {
         setdoct(res.data);
