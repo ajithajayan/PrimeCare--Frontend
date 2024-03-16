@@ -4,12 +4,26 @@ import Typography from '@mui/material/Typography';
 
 // import AppWebsiteVisits from '../elements/app-website-visits';
 import AppWidgetSummary from '../../components/admin/elements/app-widget-summary';
+import { useEffect, useState } from 'react';
+import { baseUrl } from '../../utils/constants/Constants';
+import axios from 'axios';
 
 // import Iconify from '../elements/iconify/iconify';
 
 // ----------------------------------------------------------------------
 
 export default function Dashboard() {
+
+  const [adminData, setadminData] = useState(null)
+
+  useEffect(() => {
+    axios.get(baseUrl+"appointment/api/admin-transactions/").then((res) => {
+      setadminData(res.data)
+      console.log(res.data);
+    }).catch((error)=>{
+      console.log(error);
+    })
+  },[])
   return (
     <Container maxWidth="xl">
       <Typography variant="h4" sx={{ mb: 5 }}>
@@ -19,8 +33,8 @@ export default function Dashboard() {
       <Grid container spacing={3}>
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="Weekly Sales"
-            total={714000}
+            title="Total Bookings"
+            total={adminData?adminData.total_transactions:0}
             color="success"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_bag.png" />}
           />
@@ -28,8 +42,8 @@ export default function Dashboard() {
 
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="New Users"
-            total={1352831}
+            title="Patients"
+            total={adminData?adminData.total_patients:0}
             color="info"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png" />}
           />
@@ -37,17 +51,17 @@ export default function Dashboard() {
 
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="Item Orders"
-            total={1723315}
+            title="Doctors"
+            total={adminData?adminData.total_doctors:0}
             color="warning"
-            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_buy.png" />}
+            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png" />}
           />
         </Grid>
 
         <Grid xs={12} sm={6} md={3}>
           <AppWidgetSummary
-            title="Bug Reports"
-            total={234}
+            title="Total Revenue"
+            total={adminData?adminData.total_revenue:0}
             color="error"
             icon={<img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />}
           />
