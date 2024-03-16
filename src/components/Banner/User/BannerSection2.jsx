@@ -1,4 +1,4 @@
-import React from 'react'
+
 import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import DoctorConsultation from "../../../assets/images/doctor/Doctor-Consultation.jpg";
