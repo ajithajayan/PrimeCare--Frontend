@@ -9,6 +9,8 @@ import { baseUrl } from "../../utils/constants/Constants";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import moment from "moment";
 import DatePickerComponent from "../calender/DatePickerComponent";
+import Cookies from "js-cookie";
+import { UserAPIwithAcess } from "../API/AdminAPI";
 
 const DoctorWeeklySlotBooking = ({ docid, setRefresh,setBulk, setNormal,setAdvanceBooking}) => {
   const [selectedFromDate, setSelectedFromDate] = useState(dayjs());
@@ -16,6 +18,12 @@ const DoctorWeeklySlotBooking = ({ docid, setRefresh,setBulk, setNormal,setAdvan
   const [timeSlots, setTimeSlots] = useState([]);
   const [fromTime, setFromTime] = useState(null);
   const [toTime, setToTime] = useState(null);
+  const accessToken = Cookies.get("access");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
 
   useEffect(() => {
     // Fetch existing time slots for the selected date range and update state
@@ -95,12 +103,12 @@ const DoctorWeeklySlotBooking = ({ docid, setRefresh,setBulk, setNormal,setAdvan
       };
       const updatedSlots = [newSlot];
 
-      axios
-        .post(baseUrl + `appointment/doctors/${docid}/update_slots/bulk/`, {
+      UserAPIwithAcess
+        .post(`appointment/doctors/${docid}/update_slots/bulk/`, {
           from_date: selectedFromDate.format("YYYY-MM-DD"),
           to_date: selectedToDate.format("YYYY-MM-DD"),
           slots: updatedSlots,
-        })
+        },config)
         .then((response) => {
           // Call the function to fetch available slots if needed
           // fetchAvailableSlots();

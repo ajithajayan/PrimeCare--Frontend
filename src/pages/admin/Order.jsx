@@ -47,9 +47,14 @@ function Order() {
   // to fetch the data as per the search query
   const fetchTransactions = (url) => {
     const accessToken = Cookies.get("access");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
     console.log(accessToken, "this portion for the access token");
     AdminAPIwithAcess
-      .get(url)
+      .get(url,config)
       .then((req) => {
         setTrasaction(req.data.results);
         setNextPage(req.data.next);
@@ -64,11 +69,11 @@ function Order() {
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    fetchTransactions(baseUrl + `appointment/detail/transaction/list/?search=${query}`);
+    fetchTransactions( `appointment/detail/transaction/list/?search=${query}`);
   };
 
   useEffect(() => {
-    fetchTransactions(baseUrl + `appointment/detail/transaction/list/?search=${searchQuery}`);
+    fetchTransactions(`appointment/detail/transaction/list/?search=${searchQuery}`);
   }, [ searchQuery]);
 
   return (

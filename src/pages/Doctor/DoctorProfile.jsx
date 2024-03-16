@@ -12,9 +12,19 @@ import Timer from "../../components/Timer/Timer";
 import { useStaticPicker } from "@mui/x-date-pickers/internals";
 import BookindDetailsDoctor from "../../components/Doctor/Elements/BookingDetailsDoctor";
 import DoctorWeeklySlotBooking from "../../components/Doctor/DoctorWeeklySlotBooking";
-import { UserAPIwithAcess } from "../../components/API/AdminAPI";
+import {
+  UserAPIwithAcess,
+  UserImageAccess,
+} from "../../components/API/AdminAPI";
 
 function DoctorProfile() {
+  const accessToken = Cookies.get("access");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
+
   const UserFields = [
     "username",
     "first_name",
@@ -74,7 +84,6 @@ function DoctorProfile() {
   ];
 
   const ProfilefieldInputTypes = {
-
     consultaion_fees: "number",
     years_of_experience: "number",
     about_me: "textarea",
@@ -88,11 +97,9 @@ function DoctorProfile() {
   const [id, setId] = useState(null);
 
   const [docid, setdocid] = useState("");
- 
 
   const [user, setUser] = useState({});
   const [specializations, setSpecializations] = useState("");
-
 
   // to display the booking component
 
@@ -102,14 +109,15 @@ function DoctorProfile() {
 
   const [docDetail, setDocDetail] = useState([]);
 
-  
   // for booking details
 
   const [booking, setBooking] = useState(null);
 
-  const fetchBookingDetails = async(id) => {
-    await axios
-      .get(baseUrl + `appointment/booking/details/doctor/${id}`)
+  const fetchBookingDetails = async (id) => {
+    await UserAPIwithAcess.get(
+      `appointment/booking/details/doctor/${id}`,
+      config
+    )
       .then((res) => {
         setBooking(res.data.data);
         console.log("the details of the doctor is here", res.data);
@@ -133,8 +141,7 @@ function DoctorProfile() {
     let form_data = new FormData();
     form_data.append("profile_picture", file, file.name);
 
-    await axios
-      .patch(baseUrl + `auth/doc/update/${id}`, form_data)
+    await UserImageAccess.patch(`auth/doc/update/${id}`, form_data, config)
       .then((res) => {
         fetchData();
         toast.success("profile pic has been updated");
@@ -149,8 +156,7 @@ function DoctorProfile() {
     let form_data = new FormData();
     form_data.append("profile_picture", ""); // Set to an empty string or any placeholder value
     // Add other fields to form_data as needed
-    await axios
-      .patch(baseUrl + `auth/doc/update/${id}`, form_data)
+    await UserImageAccess.patch(`auth/doc/update/${id}`, form_data, config)
       .then((res) => {
         fetchData();
         toast.success("profile pic deleted successfully");
@@ -172,14 +178,16 @@ function DoctorProfile() {
       console.log(id);
       setId(id);
 
-      const doct = await axios.get(baseUrl + "auth/doc/list/" + id);
+      const doct = await UserAPIwithAcess.get("auth/doc/list/" + id, config);
       if (doct.status === 200) {
         setProfile(doct.data.profile_picture);
         setAbout(doct.data);
         setdocid(doct.data.doctor_user.custom_id);
-        fetchBookingDetails(doct.data.doctor_user.custom_id)
-        await axios
-          .get(baseUrl + `auth/admin/doc/${doct.data.doctor_user.custom_id}`)
+        fetchBookingDetails(doct.data.doctor_user.custom_id);
+        await UserAPIwithAcess.get(
+          `auth/admin/doc/${doct.data.doctor_user.custom_id}`,
+          config
+        )
           .then((res) => {
             setUser({ ...res.data.user }); // Spread the user object to avoid mutation
             setSpecializations(res.data.specializations || "");
@@ -204,69 +212,7 @@ function DoctorProfile() {
     fetchData();
   }, []);
 
-  // used to update the details of the users
-  // const handleInputChange = (field, value) => {
-  //   setUser((prevUser) => ({
-  //     ...prevUser,
-  //     [field]: value,
-  //   }));
-  // };
-
-  // const handleCheckboxChange = (field, checked) => {
-  //   setUser((prevUser) => ({
-  //     ...prevUser,
-  //     [field]: checked,
-  //   }));
-  // };
-
-  // const handleSelectChange = (e, field) => {
-  //   const value = e.target.value;
-
-  //   if (field === "specializations") {
-  //     setSpecializations(value);
-  //   } else if (field.includes(".")) {
-  //     const [nestedField, subField] = field.split(".");
-  //     setUser((prevUser) => ({
-  //       ...prevUser,
-  //       [nestedField]: {
-  //         ...prevUser[nestedField],
-  //         [subField]: value,
-  //       },
-  //     }));
-  //   } else {
-  //     handleInputChange(field, value);
-  //   }
-  // };
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-
-  //   // Create a FormData object
-  //   const formData = new FormData();
-
-  //   // Append user data to the form data
-  //   Object.keys(user).forEach((key) => {
-  //     formData.append(`user.${key}`, user[key]);
-  //   });
-
-  //   // Append other data to the form data
-  //   formData.append("specializations", specializations);
-
-  //   // Make the API request
-  //   axios
-  //     .patch(baseUrl + `auth/admin/doc/${docid}`, formData)
-  //     .then((res) => {
-  //       console.log("Data updated successfully:", res.data);
-  //       toast.success("Data updated successfully");
-  //       // Optionally, you can reset the form or handle other actions
-  //     })
-  //     .catch((err) => {
-  //       console.error("Error updating data:", err);
-  //       // Handle the error as needed
-  //       toast.error(err.response.data.user.date_of_birth[0]);
-  //     });
-  // };
- const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({});
 
   const handleInputChange = (field, value) => {
     setUser((prevUser) => ({
@@ -307,37 +253,37 @@ function DoctorProfile() {
   };
 
   const validateField = (field, value) => {
-    let error = '';
+    let error = "";
 
     switch (field) {
-      case 'first_name':
-      case 'last_name':
+      case "first_name":
+      case "last_name":
         // Validate that the name contains only letters
         if (!/^[a-zA-Z]+$/.test(value)) {
-          error = 'Name should only contain letters.';
+          error = "Name should only contain letters.";
         }
         break;
 
-      case 'phone_number':
+      case "phone_number":
         // Validate phone number - 10 digits only
         if (!/^[0-9]{10}$/.test(value)) {
-          error = 'Invalid phone number. It should contain 10 digits.';
+          error = "Invalid phone number. It should contain 10 digits.";
         }
         break;
 
-      case 'date_of_birth':
+      case "date_of_birth":
         // Validate date of birth - 10 years before the current date
         const tenYearsAgo = new Date();
         tenYearsAgo.setFullYear(tenYearsAgo.getFullYear() - 22);
         if (new Date(value) > tenYearsAgo) {
-          error = 'Date of birth should be at least 22 years ago.';
+          error = "Date of birth should be at least 22 years ago.";
         }
         break;
 
-      case 'zip_code':
+      case "zip_code":
         // Validate zip code - 6 digits only
         if (!/^[0-9]{6}$/.test(value)) {
-          error = 'Invalid zip code. It should contain 6 digits.';
+          error = "Invalid zip code. It should contain 6 digits.";
         }
         break;
 
@@ -357,7 +303,7 @@ function DoctorProfile() {
     e.preventDefault();
 
     // Check if there are any errors before submitting the form
-    const hasErrors = Object.values(errors).some((error) => error !== '');
+    const hasErrors = Object.values(errors).some((error) => error !== "");
 
     if (!hasErrors) {
       // Create a FormData object
@@ -369,23 +315,22 @@ function DoctorProfile() {
       });
 
       // Append other data to the form data
-      formData.append('specializations', specializations);
+      formData.append("specializations", specializations);
 
       // Make the API request
-      axios
-        .patch(baseUrl + `auth/admin/doc/${docid}`, formData)
+      UserImageAccess.patch(`auth/admin/doc/${docid}`, formData, config)
         .then((res) => {
-          console.log('Data updated successfully:', res.data);
-          toast.success('Data updated successfully');
+          console.log("Data updated successfully:", res.data);
+          toast.success("Data updated successfully");
           // Optionally, you can reset the form or handle other actions
         })
         .catch((err) => {
-          console.error('Error updating data:', err);
+          console.error("Error updating data:", err);
           // Handle the error as needed
           toast.error(err.response.data.user.date_of_birth[0]);
         });
     } else {
-      console.log('Form has errors. Please fix them before submitting.');
+      console.log("Form has errors. Please fix them before submitting.");
     }
   };
 
@@ -398,20 +343,21 @@ function DoctorProfile() {
 
     try {
       // Make the API request
-      const response = await axios.patch(
+      const response = await UserImageAccess.patch(
         baseUrl + `auth/admin/doc/${docid}`,
-        formData
+        formData,
+        config
       );
-      console.log('Data updated successfully:', response.data);
-      toast.success('Data updated successfully');
+      console.log("Data updated successfully:", response.data);
+      toast.success("Data updated successfully");
       // Optionally, you can reset the form or handle other actions
     } catch (error) {
-      console.error('Error updating data:', error);
+      console.error("Error updating data:", error);
       // Handle the error as needed
       if (error.response) {
         toast.error(error.response.data.user.date_of_birth[0]);
       } else {
-        toast.error('An unexpected error occurred');
+        toast.error("An unexpected error occurred");
       }
     }
   };
@@ -542,7 +488,7 @@ function DoctorProfile() {
           </div>
 
           {/* *************************************************This portion for Time slot********************************************************/}
-          
+
           <div className="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
             <h3 className="mb-4 text-xl font-semibold dark:text-white">
               Time slot Allotment
@@ -582,13 +528,12 @@ function DoctorProfile() {
               )}
             </div>
           </div>
-
         </div>
 
         {/* **************************************************General information********************************************************/}
 
         <div className="col-span-2">
-        <div className="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+          <div className="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
             <h3 className="mb-4 text-xl font-semibold dark:text-white">
               General information
             </h3>

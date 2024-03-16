@@ -28,9 +28,15 @@ function Doctor() {
   const handleCheckboxChange = (docId, currentStatus) => {
     const formData = new FormData();
     formData.append("user.is_active", !currentStatus);
+    const accessToken = Cookies.get("access");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
 
     AdminAPIwithAcess
-      .patch(baseUrl + `auth/admin/doc/${docId}`, formData)
+      .patch(baseUrl + `auth/admin/doc/${docId}`,config, formData)
       .then((res) => {
         console.log("Data updated successfully:", res.data);
         toast.success("Data updated successfully");
@@ -56,9 +62,14 @@ function Doctor() {
   // to fetch the data as per the search query
   const fetchUsers = (url) => {
     const accessToken = Cookies.get("access");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
     console.log(accessToken, "this portion for the access token");
     AdminAPIwithAcess
-      .get(url)
+      .get(url,config)
       .then((req) => {
         setDoctorData(req.data.results);
         setNextPage(req.data.next);
@@ -73,11 +84,11 @@ function Doctor() {
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    fetchUsers(baseUrl + `auth/doctors/details/?search=${query}`);
+    fetchUsers(`auth/doctors/details/?search=${query}`);
   };
 
   useEffect(() => {
-    fetchUsers(baseUrl + `auth/doctors/details/?search=${searchQuery}`);
+    fetchUsers(`auth/doctors/details/?search=${searchQuery}`);
   }, [isEditModalVisible, checked, isDeleteModalVisible, searchQuery]);
 
   return (

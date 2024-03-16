@@ -8,23 +8,45 @@ import { useEffect, useState } from 'react';
 import { baseUrl } from '../../utils/constants/Constants';
 import axios from 'axios';
 import { AdminDashBoardAPI } from '../../components/API/AdminAPI';
+import Cookies from 'js-cookie';
 
 // import Iconify from '../elements/iconify/iconify';
 
 // ----------------------------------------------------------------------
+// Create Axios instance
+const api = axios.create({
+  baseURL: `${baseUrl}appointment/api/admin-transactions/`,
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  },
+});
 
 export default function Dashboard() {
 
   const [adminData, setadminData] = useState(null)
 
-  useEffect ( () => {
-    AdminDashBoardAPI.get().then((res) => {
-      setadminData(res.data)
-      console.log(res.data);
-    }).catch((error)=>{
-      console.log(error);
-    })
-  },[])
+  useEffect(() => {
+    const fetchAdminData = async () => {
+      try {
+        const accessToken = Cookies.get("access");
+        if (!accessToken) {
+          throw new Error("Access token not found");
+        } 
+
+        // Update headers with access token
+        api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+
+        const response = await api.get();
+        setadminData(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching admin data:", error);
+      }
+    };
+
+    fetchAdminData();
+  }, []);
   return (
     <Container maxWidth="xl">
       <Typography variant="h4" sx={{ mb: 5 }}>

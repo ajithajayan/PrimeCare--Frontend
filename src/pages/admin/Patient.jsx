@@ -29,9 +29,15 @@ function Patient() {
   const handleCheckboxChange = (docId, currentStatus) => {
     const formData = new FormData();
     formData.append("user.is_active", !currentStatus);
+    const accessToken = Cookies.get("access");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
 
     AdminAPIwithAcess
-      .patch(baseUrl + `auth/admin/client/${docId}`, formData)
+      .patch(baseUrl + `auth/admin/client/${docId}`,config, formData)
       .then((res) => {
         console.log("Data updated successfully:", res.data);
         toast.success("Data updated successfully");
@@ -57,8 +63,13 @@ function Patient() {
   // to fetch the data as per the search query
   const fetchUsers = (url) => {
     const accessToken = Cookies.get("access");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
     AdminAPIwithAcess
-      .get(url)
+      .get(url,config)
       .then((req) => {
         setDoctorData(req.data.results);
         setNextPage(req.data.next);

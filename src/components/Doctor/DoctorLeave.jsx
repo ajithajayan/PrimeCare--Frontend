@@ -9,8 +9,16 @@ import { baseUrl } from "../../utils/constants/Constants";
 import moment from "moment";
 import DatePickerComponent from "../calender/DatePickerComponent";
 import Select from "react-select";
+import Cookies from "js-cookie";
+import { UserAPIwithAcess } from "../API/AdminAPI";
 
 const DoctorLeave = ({ docid, setRefresh }) => {
+  const accessToken = Cookies.get("access");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
   const [selectedFromDate, setSelectedFromDate] = useState(dayjs());
   const [selectedToDate, setSelectedToDate] = useState(dayjs());
   
@@ -28,14 +36,14 @@ const DoctorLeave = ({ docid, setRefresh }) => {
 
   const handleApplyLeave = async () => {
     try {
-      await axios.post(
+      await UserAPIwithAcess.post(
         `${baseUrl}appointment/doctors/D5000/update_leave/`,
         {
           fromDate: selectedFromDate.format("YYYY-MM-DD"),
           toDate: selectedToDate.format("YYYY-MM-DD"),
           custom_id:docid
           
-        }
+        },config
       );
 
       toast.success("Slots saved successfully");

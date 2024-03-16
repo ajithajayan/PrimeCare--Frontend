@@ -16,7 +16,10 @@ import Cookies from "js-cookie";
 import Rating from "../../components/Rating/Rating";
 import { UserAPIwithAcess } from "../../components/API/AdminAPI";
 
+
+
 function DocProfile() {
+  
   const { id } = useParams();
   
   const [doct, setdoct] = useState("");

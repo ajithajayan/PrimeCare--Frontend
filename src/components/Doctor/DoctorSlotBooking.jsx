@@ -13,8 +13,15 @@ import DoctorWeeklySlotBooking from "./DoctorWeeklySlotBooking";
 import AdvancedSlotBooking from "./AdvancedSlotBooking";
 import DoctorLeave from "./DoctorLeave";
 import { UserAPIwithAcess } from "../API/AdminAPI";
+import Cookies from "js-cookie";
 
 const DoctorSlotBooking = ({ docid }) => {
+  const accessToken = Cookies.get("access");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [timeSlots, setTimeSlots] = useState([]);
   const [fromTime, setFromTime] = useState(null);
@@ -34,12 +41,11 @@ const DoctorSlotBooking = ({ docid }) => {
   // function to fetch the available slots
 
   const fetchAvailableSlots = () => {
-    axios
+    UserAPIwithAcess
       .get(
-        baseUrl +
           `appointment/doctors/${docid}/slots?date=${selectedDate.format(
             "YYYY-MM-DD"
-          )}`
+          )}`,config
       )
       .then((response) => {
         setTimeSlots(response.data.available_slots || []);
@@ -161,11 +167,11 @@ const DoctorSlotBooking = ({ docid }) => {
       };
       const updatedSlots = [newSlot];
 
-      axios
-        .post(baseUrl + `appointment/doctors/${docid}/update_slots/`, {
+      UserAPIwithAcess
+        .post(`appointment/doctors/${docid}/update_slots/`, {
           date: selectedDate.format("YYYY-MM-DD"),
           slots: updatedSlots,
-        })
+        },config)
         .then((response) => {
           fetchAvailableSlots();
           toast.success("Slot created successfully");
@@ -186,13 +192,13 @@ const DoctorSlotBooking = ({ docid }) => {
   const handleDeleteSlot = (index) => {
     const slotToDelete = timeSlots[index];
 
-    axios
-      .delete(baseUrl + `appointment/doctors/${docid}/delete_slot/`, {
+    UserAPIwithAcess
+      .delete(`appointment/doctors/${docid}/delete_slot/`, {
         data: {
           date: selectedDate.format("YYYY-MM-DD"),
           slot: slotToDelete,
         },
-      })
+      },config)
       .then((response) => {
         fetchAvailableSlots(); // Refresh the slots after deletion
         toast.success("slot deleted sucessfully");

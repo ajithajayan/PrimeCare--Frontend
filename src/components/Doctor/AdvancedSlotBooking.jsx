@@ -10,8 +10,16 @@ import { TrashIcon } from "@heroicons/react/24/solid";
 import moment from "moment";
 import DatePickerComponent from "../calender/DatePickerComponent";
 import Select from "react-select";
+import Cookies from "js-cookie";
+import { UserAPIwithAcess } from "../API/AdminAPI";
 
 const AdvancedSlotBooking = ({ docid, setRefresh,setBulk, setNormal,setAdvanceBooking }) => {
+  const accessToken = Cookies.get("access");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
   const [selectedFromDate, setSelectedFromDate] = useState(dayjs());
   const [selectedToDate, setSelectedToDate] = useState(dayjs());
   const [timeSlots, setTimeSlots] = useState([]);
@@ -86,8 +94,8 @@ const AdvancedSlotBooking = ({ docid, setRefresh,setBulk, setNormal,setAdvanceBo
 
   const handleSaveSlots = async () => {
     try {
-      await axios.post(
-        `${baseUrl}appointment/doctors/D5000/update_slots/advanced/`,
+      await UserAPIwithAcess.post(
+        `appointment/doctors/D5000/update_slots/advanced/`,
         {
           fromDate: selectedFromDate.format("YYYY-MM-DD"),
           toDate: selectedToDate.format("YYYY-MM-DD"),
@@ -98,7 +106,7 @@ const AdvancedSlotBooking = ({ docid, setRefresh,setBulk, setNormal,setAdvanceBo
           toBreakTimeInMinutes: moment(toBreakTime.$d).format("HH:mm:ss"),
           workingdaysOfWeek: selectedDays.map((day) => day.label),
           slot_duration: selectedDuration,
-        }
+        },config
       );
 
       toast.success("Slots saved successfully");
