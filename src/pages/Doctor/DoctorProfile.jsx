@@ -25,6 +25,8 @@ function DoctorProfile() {
     },
   };
 
+
+  const [isVerified, setisVerified] =useState(false)
   const UserFields = [
     "username",
     "first_name",
@@ -192,6 +194,8 @@ function DoctorProfile() {
             setUser({ ...res.data.user }); // Spread the user object to avoid mutation
             setSpecializations(res.data.specializations || "");
             setDocDetail(res.data);
+            setisVerified(res.data.user.is_id_verified)
+            
             console.log(res.data, "reached to the editing component");
           })
           .catch((err) => {
@@ -488,7 +492,7 @@ function DoctorProfile() {
           </div>
 
           {/* *************************************************This portion for Time slot********************************************************/}
-
+          {isVerified&&
           <div className="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
             <h3 className="mb-4 text-xl font-semibold dark:text-white">
               Time slot Allotment
@@ -496,14 +500,14 @@ function DoctorProfile() {
             <div className="mb-4">
               <DoctorSlotBooking docid={docid} />
             </div>
-          </div>
+          </div>}
 
           {/* ***********************************************verification documents***************************************************************** */}
-          {id && <DocumentVerificationForm id={id} />}
+          {id && !isVerified && <DocumentVerificationForm id={id} />}
 
           {/******************************* Tihs portion for the  Bookin details listing ********************************  */}
 
-          <div className="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+          {isVerified && <div className="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
             <div className="flow-root">
               <h3 className="text-xl font-semibold dark:text-white">
                 Your Booking Details
@@ -527,7 +531,7 @@ function DoctorProfile() {
                 </p>
               )}
             </div>
-          </div>
+          </div>}
         </div>
 
         {/* **************************************************General information********************************************************/}
