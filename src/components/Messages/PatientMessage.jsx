@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import "./ChatComponent.css";
 import { useSelector } from "react-redux";
@@ -21,17 +21,11 @@ const PatientChatComponent = () => {
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const [bookings, setBookings] = useState([]);
-  console.log("BOOKINGS:", bookings);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [client, setClient] = useState(null);
-  console.log("CLIENT:", client);
-  // const salonUser = useSelector(state => state.salon)
-  // console.log('salonUser:', salonUser)
-  // const salonId = salonUser.salonUser.id
-  // console.log('salonID:', salonId)
-
   const [patient_id, setPatientID] = useState(null);
   const [doct, setdoct] = useState("");
+  const chatMessagesRef = useRef(null);
 
   const fetchBookings = async (id) => {
     try {
@@ -144,6 +138,16 @@ const PatientChatComponent = () => {
     setMessage("");
   };
 
+  useEffect(() => {
+    const scrollToBottom = () => {
+      if (chatMessagesRef.current) {
+        chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+      }
+    };
+
+    scrollToBottom();
+  }, [chatMessages]);
+
   return (
     <div>
       <main
@@ -224,7 +228,7 @@ const PatientChatComponent = () => {
                       </div>
                     </div>
 
-                    <div className="flex flex-col flex-grow h-0 p-4 overflow-auto">
+                    <div className="flex flex-col flex-grow h-0 p-4 overflow-auto" ref={chatMessagesRef}>
                       {chatMessages.map((msg, index) => (
                         <div key={index} className="message-container">
                           {msg.sendername === doct.first_name ? (
