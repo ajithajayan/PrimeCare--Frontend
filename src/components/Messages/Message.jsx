@@ -7,8 +7,15 @@ import axios from 'axios';
 import { baseUrl } from '../../utils/constants/Constants';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
+import { UserAPIwithAcess } from '../API/AdminAPI';
 
 const ChatComponent = () => {
+  const accessToken = Cookies.get("access");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
   const navigate = useNavigate();
   const [patient_id, setPatientID] = useState(null);
   const [patient, setPatient] = useState('');
@@ -24,10 +31,10 @@ const ChatComponent = () => {
       const decoded = jwtDecode(token);
       const userId = decoded.user_id;
 
-      const patientIdResponse = await axios.get(baseUrl + `auth/custom-id/patient/${userId}`);
+      const patientIdResponse = await UserAPIwithAcess.get(`auth/custom-id/patient/${userId}`,config);
       const patientId = patientIdResponse.data.patient_user.custom_id;
 
-      const bookingsResponse = await axios.get(`${baseUrl}appointment/api/patient-transactions/?patient_id=${patientId}`);
+      const bookingsResponse = await UserAPIwithAcess.get(`appointment/api/patient-transactions/?patient_id=${patientId}`,config);
       const reversedBookings = bookingsResponse.data.reverse();
 
       setPatient(patientIdResponse.data);

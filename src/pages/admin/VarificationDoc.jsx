@@ -10,10 +10,18 @@ import DocCrump from "../../components/admin/elements/BreadCrumps/DocCrump";
 import { toast } from "react-toastify";
 import DeleteDoct from "../../components/admin/elements/Modal/DeleteDoct";
 import Cookies from 'js-cookie';
+import { UserAPIwithAcess } from "../../components/API/AdminAPI";
+import VerificationDownload from "../../components/admin/elements/VerificationDownload";
 
 
 
 function VarificationDoc() {
+  const accessToken = Cookies.get("access");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
   const onChange = (e) => console.log(`radio checked:${e.target.value}`);
   const [doctorData, setDoctorData] = useState([]);
   const [isDataFetched, setIsDataFetched] = useState(false);
@@ -30,8 +38,8 @@ function VarificationDoc() {
     const formData = new FormData();
     formData.append("user.is_active", !currentStatus);
 
-    axios
-      .patch(baseUrl + `auth/admin/doc/${docId}`, formData)
+    UserAPIwithAcess
+      .patch( `auth/admin/doc/${docId}`, formData,config)
       .then((res) => {
         console.log("Data updated successfully:", res.data);
         toast.success("Data updated successfully");
@@ -57,13 +65,8 @@ function VarificationDoc() {
   // to fetch the data as per the search query
   const fetchUsers = (url) => {
     const accessToken = Cookies.get("access");
-    axios
-      .get(url, {
-                headers: {
-                  Authorization: `Bearer ${accessToken}`,
-                  Accept: 'application/json',
-                  'Content-Type': 'application/json',
-                }})
+    UserAPIwithAcess
+      .get(url, config)
       .then((req) => {
         setDoctorData(req.data.results);
         setNextPage(req.data.next);
@@ -334,7 +337,7 @@ function VarificationDoc() {
                           {item.approval_status}
                         </td>
 
-                        <td className="p-4 space-x-2 whitespace-nowrap">
+                        <td className="p-4 flex space-x-2 whitespace-nowrap">
                           <button
                             type="button"
                             onClick={() =>
@@ -357,25 +360,10 @@ function VarificationDoc() {
                             </svg>
                             Edit user
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => doctorDelete(item.id)}
-                            className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900"
-                          >
-                            <svg
-                              className="w-4 h-4 mr-2"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                            Delete user
-                          </button>
+                         
+
+                          <VerificationDownload userId={item.id}/>
+                          
                         </td>
                       </tr>
                     );

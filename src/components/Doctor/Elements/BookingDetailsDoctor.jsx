@@ -5,8 +5,17 @@ import { baseUrl } from "../../../utils/constants/Constants";
 import docavatar from "../../../assets/images/doctor/docavatar.webp";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { UserAPIwithAcess } from "../../API/AdminAPI";
+import Cookies from "js-cookie";
 
 function BookindDetailsDoctor({ transaction_id }) {
+
+  const accessToken = Cookies.get("access");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
   const [doct, setdoct] = useState("");
   const [trasaction, setTrasaction] = useState(null);
   const [status, setStatus] = useState(null);
@@ -15,8 +24,8 @@ function BookindDetailsDoctor({ transaction_id }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get(baseUrl + `appointment/detail/transaction/${transaction_id}`)
+    UserAPIwithAcess
+      .get(`appointment/detail/transaction/${transaction_id}`,config)
       .then((res) => {
         const transactionData = res.data;
         setTrasaction(transactionData);
@@ -26,9 +35,9 @@ function BookindDetailsDoctor({ transaction_id }) {
         // const updatedBalance = wallet.balance + transactionData.amount - 50;
         // setWallet({ ...wallet, balance: updatedBalance });
 
-        axios
+        UserAPIwithAcess
           .get(
-            baseUrl + `appointment/detail/patient/${transactionData.patient_id}`
+            `appointment/detail/patient/${transactionData.patient_id}`,config
           )
           .then((res) => {
             setdoct(res.data);
@@ -56,17 +65,13 @@ function BookindDetailsDoctor({ transaction_id }) {
   }, [trasaction]);
 
   const handleCancel = () => {
-    axios
+    UserAPIwithAcess
       .post(
-        baseUrl + `appointment/cancel/booking/doctor/`,
+        `appointment/cancel/booking/doctor/`,
         {
           transaction_id: trasaction.transaction_id,
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        config
       )
       .then((res) => {
         console.log(res);

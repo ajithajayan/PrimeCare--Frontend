@@ -2,8 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { baseUrl } from "../../../utils/constants/Constants";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 
 const DocumentVerificationForm = ({ id }) => {
+  const accessToken = Cookies.get("access");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
   const [aadharFile, setAadharFile] = useState(null);
   const [degreeCertificate, setDegreeCertificate] = useState(null);
   const [experienceCertificate, setExperienceCertificate] = useState(null);

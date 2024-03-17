@@ -2,8 +2,16 @@ import React, { useEffect, useState } from "react";
 import { baseUrl } from "../../../../utils/constants/Constants";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
+import { UserAPIwithAcess } from "../../../API/AdminAPI";
 
 function EditPatient({ doctorId, setIsDataFetched, setEditModalVisible }) {
+  const accessToken = Cookies.get("access");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
   const UserFields = [
     "username",
     "first_name",
@@ -106,8 +114,8 @@ function EditPatient({ doctorId, setIsDataFetched, setEditModalVisible }) {
     formData.append("blood_group", specializations);
 
     // Make the API request
-    axios
-      .patch(baseUrl + `auth/admin/client/${doctorId}`, formData)
+    UserAPIwithAcess
+      .patch(`auth/admin/client/${doctorId}`, formData,config)
       .then((res) => {
         console.log("Data updated successfully:", res.data);
         toast.success("Data updated successfully");
@@ -122,8 +130,8 @@ function EditPatient({ doctorId, setIsDataFetched, setEditModalVisible }) {
   };
 
   useEffect(() => {
-    axios
-      .get(baseUrl + `auth/admin/client/${doctorId}`)
+    UserAPIwithAcess
+      .get(`auth/admin/client/${doctorId}`,config)
       .then((res) => {
         setUser({ ...res.data.user }); // Spread the user object to avoid mutation
         setSpecializations(res.data.blood_group || "");

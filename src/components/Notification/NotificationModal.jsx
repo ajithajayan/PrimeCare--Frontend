@@ -5,8 +5,18 @@ import { baseUrl } from '../../utils/constants/Constants';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { debounce } from 'lodash';
+import { UserAPIwithAcess } from "../../components/API/AdminAPI";
+import Cookies from 'js-cookie';
+
 
 function NotificationModal({ isOpen, customID, data }) {
+
+  const accessToken = Cookies.get("access");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
   const [notifications, setNotifications] = useState([]);
   const debouncedToast = debounce((message) => {
     toast.info(`New Notification: ${message}`);
@@ -17,7 +27,7 @@ function NotificationModal({ isOpen, customID, data }) {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get(`${baseUrl}notification/doctor-side/doctor-notification/${customID}/`);
+        const response = await UserAPIwithAcess.get(`notification/doctor-side/doctor-notification/${customID}/`,config);
         debouncedToast(response.data.notifications[0].message)
         setNotifications(response.data.notifications);
         setNotificationCount(response.data.notification_count);
@@ -36,11 +46,11 @@ function NotificationModal({ isOpen, customID, data }) {
 
   const handleNotificationClick = async (notification) => {
     try {
-      await axios.put(
-        `${baseUrl}notification/update-notification/${notification.id}/`,
+      await UserAPIwithAcess.put(
+        `notification/update-notification/${notification.id}/`,
         {
           is_seen: true,
-        }
+        },config
       );
 
       setNotifications((prevNotifications) =>

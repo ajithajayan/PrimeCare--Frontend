@@ -2,12 +2,19 @@ import axios from 'axios';
 import React from 'react';
 import { baseUrl } from '../../../../utils/constants/Constants';
 import { toast } from 'react-toastify';
+import { UserAPIwithAcess } from '../../../API/AdminAPI';
 
 function DeleteModal({ doctorId,setDeleteModalVisible }) {
   const handleYesClick = () => {
     // Handle deletion logic here
+    const accessToken = Cookies.get("access");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
     // ...
-    axios.delete(baseUrl+`auth/admin/doc/delete/${doctorId}`).then((res)=>{
+    UserAPIwithAcess.delete(`auth/admin/doc/delete/${doctorId}`,config).then((res)=>{
       console.log(res);
       toast.success("Doctor Deleted Successfully");
       setDeleteModalVisible(false);

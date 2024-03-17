@@ -10,6 +10,13 @@ import docavatar from "../../assets/images/doctor/docavatar.webp";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { UserAPIwithAcess } from "../API/AdminAPI";
 const DoctorChatComponent = () => {
+
+  const accessToken = Cookies.get("access");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
   const chatContainerRef = useRef();
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
@@ -28,8 +35,8 @@ const DoctorChatComponent = () => {
 
   const fetchBookings = async (id) => {
     try {
-      const response = await axios.get(
-        `${baseUrl}appointment/api/doctor-transactions/?doctor_id=${id}`
+      const response = await UserAPIwithAcess.get(
+        `appointment/api/doctor-transactions/?doctor_id=${id}`,config
       );
       setBookings(response.data);
       console.log(response.data);
@@ -39,8 +46,8 @@ const DoctorChatComponent = () => {
   };
 
   const fetchDoctorID = (id) => {
-    axios
-      .get(baseUrl + `auth/custom-id/doctor/${id}`)
+    UserAPIwithAcess
+      .get(baseUrl + `auth/custom-id/doctor/${id}`,config)
       .then((res) => {
         setdoct(res.data);
         console.log(res.data.doctor_user.custom_id);

@@ -6,8 +6,15 @@ import docavatar from "../../../assets/images/doctor/docavatar.webp";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { UserAPIwithAcess } from "../../API/AdminAPI";
+import Cookies from "js-cookie";
 
 function BookindDetails({ transaction_id, setWallet }) {
+  const accessToken = Cookies.get("access");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
   const [doct, setdoct] = useState("");
   const [trasaction, setTrasaction] = useState(null);
   const [status, setStatus] = useState(null);
@@ -15,8 +22,8 @@ function BookindDetails({ transaction_id, setWallet }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get(baseUrl + `appointment/detail/transaction/${transaction_id}`)
+    UserAPIwithAcess
+      .get(`appointment/detail/transaction/${transaction_id}`,config)
       .then((res) => {
         const transactionData = res.data;
         setTrasaction(transactionData);
@@ -26,9 +33,9 @@ function BookindDetails({ transaction_id, setWallet }) {
         // const updatedBalance = wallet.balance + transactionData.amount - 50;
         // setWallet({ ...wallet, balance: updatedBalance });
 
-        axios
+        UserAPIwithAcess
           .get(
-            baseUrl + `appointment/detail/doctors/${transactionData.doctor_id}`
+           `appointment/detail/doctors/${transactionData.doctor_id}`,config
           )
           .then((res) => {
             setdoct(res.data);
@@ -44,17 +51,13 @@ function BookindDetails({ transaction_id, setWallet }) {
   }, [status]);
 
   const handleCancel = () => {
-    axios
+    UserAPIwithAcess
       .post(
-        baseUrl + `appointment/cancel/booking/`,
+         `appointment/cancel/booking/`,
         {
           transaction_id: trasaction.transaction_id,
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+       config
       )
       .then((res) => {
         console.log(res);

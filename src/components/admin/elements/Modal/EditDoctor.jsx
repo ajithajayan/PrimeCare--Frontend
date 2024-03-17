@@ -2,8 +2,16 @@ import React, { useEffect, useState } from "react";
 import { baseUrl } from "../../../../utils/constants/Constants";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
+import { UserAPIwithAcess, UserImageAccess } from "../../../API/AdminAPI";
 
 function EditDoctor({ doctorId, setIsDataFetched, setEditModalVisible }) {
+  const accessToken = Cookies.get("access");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
   const UserFields = [
     "username",
     "first_name",
@@ -114,8 +122,8 @@ function EditDoctor({ doctorId, setIsDataFetched, setEditModalVisible }) {
     formData.append("specializations", specializations);
 
     // Make the API request
-    axios
-      .patch(baseUrl + `auth/admin/doc/${doctorId}`, formData)
+    UserImageAccess
+      .patch(`auth/admin/doc/${doctorId}`, formData,config)
       .then((res) => {
         console.log("Data updated successfully:", res.data);
         toast.success("Data updated successfully");
@@ -130,8 +138,8 @@ function EditDoctor({ doctorId, setIsDataFetched, setEditModalVisible }) {
   };
 
   useEffect(() => {
-    axios
-      .get(baseUrl + `auth/admin/doc/${doctorId}`)
+    UserAPIwithAcess
+      .get(`auth/admin/doc/${doctorId}`,config)
       .then((res) => {
         setUser({ ...res.data.user }); // Spread the user object to avoid mutation
         setSpecializations(res.data.specializations || "");

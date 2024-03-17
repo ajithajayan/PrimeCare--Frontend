@@ -12,6 +12,12 @@ import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { UserAPIwithAcess } from "../API/AdminAPI";
 
 const PatientChatComponent = () => {
+  const accessToken = Cookies.get("access");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const [bookings, setBookings] = useState([]);
@@ -29,8 +35,8 @@ const PatientChatComponent = () => {
 
   const fetchBookings = async (id) => {
     try {
-      const response = await axios.get(
-        `${baseUrl}appointment/api/patient-transactions/?patient_id=${id}`
+      const response = await UserAPIwithAcess.get(
+        `appointment/api/patient-transactions/?patient_id=${id}`,config
       );
       setBookings(response.data);
       console.log(response.data);
@@ -40,8 +46,8 @@ const PatientChatComponent = () => {
   };
 
   const fetchDoctorID = (id) => {
-    axios
-      .get(baseUrl + `auth/custom-id/patient/${id}`)
+    UserAPIwithAcess
+      .get(`auth/custom-id/patient/${id}`,config)
       .then((res) => {
         setdoct(res.data);
         console.log(res.data.patient_user.custom_id);
