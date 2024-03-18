@@ -95,7 +95,7 @@ const AdvancedSlotBooking = ({ docid, setRefresh,setBulk, setNormal,setAdvanceBo
   const handleSaveSlots = async () => {
     try {
       await UserAPIwithAcess.post(
-        `appointment/doctors/D5000/update_slots/advanced/`,
+        `appointment/doctors/${docid}/update_slots/advanced/`,
         {
           fromDate: selectedFromDate.format("YYYY-MM-DD"),
           toDate: selectedToDate.format("YYYY-MM-DD"),
